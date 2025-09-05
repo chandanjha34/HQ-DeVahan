@@ -3,6 +3,7 @@ import { X, Check } from 'lucide-react';
 import { LoadingState } from './LoadingState';
 import { NFTContext } from "../contracts/DeVahanContext";
 
+
 interface MintNFTFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -54,14 +55,113 @@ const MintNFTForm: React.FC<MintNFTFormProps> = ({ isOpen, onClose }) => {
     // 4. Set loading state BEFORE the async operation
     setFormState('loading');
 
+    // try {
+    //   // In a real app, you would upload the imageFile to IPFS/Cloudinary first
+    //   // to get a URI. For now, we'll use a placeholder.
+    //   const imageURI = "ipfs://placeholder_for_uploaded_image";
+
+    //   console.log("Minting with data:", { ...formData, imageURI });
+
+    //   let MediaURL;
+    //     if(!imageURI){
+    //         console.log('media is not inserted')
+    //         return;
+    //     }
+    //     console.log(imageURI);
+    //     const formData1 = new FormData();
+    //     formData1.append("file",imageURI);
+    //     formData1.append("upload_preset", "NFT_Marketplace");
+    //     console.log(formData1);
+
+    //     const res = await fetch("https://api.cloudinary.com/v1_1/dbvezos5j/image/upload", {
+    //       method: "POST",
+    //       body: formData1
+    //     });
+        
+    //     const data = await res.json();
+    //     console.log(data);
+        
+    //         MediaURL = data.data.secure_url;
+    //         console.log("Cloudinary response:", data.data);
+
+
+    //   // Call the minting function from the context
+    //   const tx = await mintVehicle(
+    //     formData._owner,
+    //     formData._vin,
+    //     formData._make,
+    //     formData._model,
+    //     formData._year,
+    //     formData._purchasePrice,
+    //     formData._initialMileage,
+    //     MediaURL
+    //   );
+
+    //   // await tx.wait(); // Wait for the transaction to be mined
+
+    //   setFormState('success');
+
+    //   setTimeout(() => {
+    //     setFormState('idle');
+    //     onClose(); // Close the modal
+    //   }, 3000);
+
+    // } catch (error) {
+    //   console.error("Minting failed:", error);
+    //   // Let the user know something went wrong
+    //   alert("Minting failed. Check the console for details.");
+    //   setFormState('idle'); // Reset form on error
+    // }
+
+
     try {
-      // In a real app, you would upload the imageFile to IPFS/Cloudinary first
-      // to get a URI. For now, we'll use a placeholder.
-      const imageURI = "ipfs://placeholder_for_uploaded_image";
-
+      // Placeholder - should be a File object or a valid URL
+      const imageURI = "https://via.placeholder.com/150";
+    
       console.log("Minting with data:", { ...formData, imageURI });
+    
+      if (!imageURI) {
+        console.log("media is not inserted");
+        return;
+      }
+    
+      // const formData1 = new FormData();
+      // formData1.append("file", imageURI);
+      // formData1.append("upload_preset", "NFT_Marketplace");
+    
+      // const res = await fetch("https://api.cloudinary.com/v1_1/dbvezos5j/image/upload", {
+      //   method: "POST",
+      //   body: formData1,
+      // });
+    
+      // const data = await res.json();
+      // console.log("Cloudinary response:", data);
+    
+      // const MediaURL = data.secure_url; // ✅ Correct
+      // console.log("Uploaded image URL:", MediaURL);
 
-      // Call the minting function from the context
+
+      if (!imageFile) {
+        console.log("No file selected");
+        return;
+      }
+      
+      const formData1 = new FormData();
+      formData1.append("file", imageFile); // ✅ real file object
+      formData1.append("upload_preset", "NFT_Marketplace");
+      
+      const res = await fetch("https://api.cloudinary.com/v1_1/dbvezos5j/image/upload", {
+        method: "POST",
+        body: formData1,
+      });
+      
+      const data = await res.json();
+      console.log("Cloudinary response:", data);
+      
+      const MediaURL = data.secure_url; // ✅ correct URL
+      
+    
+      // Call the minting function
       const tx = await mintVehicle(
         formData._owner,
         formData._vin,
@@ -70,24 +170,22 @@ const MintNFTForm: React.FC<MintNFTFormProps> = ({ isOpen, onClose }) => {
         formData._year,
         formData._purchasePrice,
         formData._initialMileage,
-        imageURI
+        MediaURL
       );
-
-      // await tx.wait(); // Wait for the transaction to be mined
-
-      setFormState('success');
-
+    
+      setFormState("success");
+    
       setTimeout(() => {
-        setFormState('idle');
-        onClose(); // Close the modal
+        setFormState("idle");
+        onClose();
       }, 3000);
-
+    
     } catch (error) {
       console.error("Minting failed:", error);
-      // Let the user know something went wrong
       alert("Minting failed. Check the console for details.");
-      setFormState('idle'); // Reset form on error
+      setFormState("idle");
     }
+    
   };
 
   return (
