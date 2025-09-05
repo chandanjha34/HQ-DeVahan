@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight, Zap, Shield, Globe } from 'lucide-react';
+import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight, Zap, Shield, Globe, Settings } from 'lucide-react';
 import MintNFTForm from './components/MintNFTForm';
 import TransferForm from './components/TransferForm';
+import ServiceRecords from './components/ServiceRecords';
 import Chatbot from './components/Chatbot';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import MetaMaskConnect from './components/MetaMaskConnect';
@@ -123,20 +124,14 @@ function App() {
       <nav className="cyber-nav backdrop-blur-xl border-b border-cyber-accent/20 relative z-50">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-1">
           <div className="flex items-center justify-between h-16 relative-0">
-            { /*<div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
-              <div className="cyber-logo-container">
-                <Car className="w-8 h-8 text-cyber-accent group-hover:text-cyber-neon-yellow transition-colors duration-200" />
-              </div>
-              <span className="ml-3 text-2xl font-bold cyber-text-glow tracking-wider">DeVahan</span>
-            </div> */ }
             <div className="flex items-center cursor-pointer group ml-8 " onClick={() => setCurrentPage('home')}>
-            <img 
-  src={logo} 
-  alt="DeVahan Logo" 
-  className="w-36 h-auto cursor-pointer"
-  onClick={() => setCurrentPage('home')}
-/>
-</div>
+              <img 
+                src={logo} 
+                alt="DeVahan Logo" 
+                className="w-36 h-auto cursor-pointer"
+                onClick={() => setCurrentPage('home')}
+              />
+            </div>
             <div className="hidden md:block">
               <div className="flex items-center space-x-6 mr-10">
                 {isAuthenticated && currentUser?.type === 'user' && (
@@ -152,6 +147,11 @@ function App() {
                 {isAuthenticated && currentUser?.type === 'user' && (
                   <div onClick={() => setShowTransferModal(true)} className="cursor-pointer">
                     <NavLink icon={<Transfer />} text={t('nav.transfer')} />
+                  </div>
+                )}
+                {isAuthenticated && (
+                  <div onClick={() => setCurrentPage('service-records')} className="cursor-pointer">
+                    <NavLink icon={<Settings />} text="Service Records" />
                   </div>
                 )}
                 <NavLink icon={<History />} text={t('nav.history')} />
@@ -346,6 +346,7 @@ function App() {
         selectedVehicle={selectedVehicle}
       />
 
+      {/* Main Content */}
       {currentPage === 'home' ? (
         <>
           {/* Hero Section - No Animations */}
@@ -397,6 +398,26 @@ function App() {
             </div>
           </div>
         </>
+      ) : currentPage === 'service-records' ? (
+        // Service Records Page
+        isAuthenticated ? (
+          <ServiceRecords 
+            userType={currentUser?.type || 'user'}
+            selectedVehicle={selectedVehicle || undefined}
+          />
+        ) : (
+          <div className="max-w-7xl mx-auto px-4 py-32 text-center">
+            <Shield className="w-16 h-16 text-cyber-accent mb-4 mx-auto" />
+            <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
+            <p className="text-cyber-muted mb-8">Please sign in to access service records</p>
+            <button 
+              onClick={() => setShowAuthModal(true)}
+              className="cyber-btn-primary"
+            >
+              Sign In
+            </button>
+          </div>
+        )
       ) : (
         // Vehicles Page - No Animations
         <div className="max-w-7xl mx-auto px-4 py-12">
