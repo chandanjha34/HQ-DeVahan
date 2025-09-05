@@ -1,11 +1,12 @@
-import React, { useState} from 'react';
-import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight, Zap, Shield, Globe } from 'lucide-react';
 import MintNFTForm from './components/MintNFTForm';
 import TransferForm from './components/TransferForm';
 import Chatbot from './components/Chatbot';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import MetaMaskConnect from './components/MetaMaskConnect';
 import { useLanguage } from './context/LanguageContext';
+import logo from './assets/logo.png';
 
 function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -24,9 +25,9 @@ function App() {
     wallet: string;
     type: 'user' | 'dealer';
   } | null>(null);
-
+  
   const { t } = useLanguage();
- 
+
   const vehicles = [
     {
       name: "BMW M2",
@@ -75,7 +76,7 @@ function App() {
     e.preventDefault();
     const email = (e.target as any).email.value;
     const wallet = metaMaskAddress || (e.target as any).wallet.value;
-
+    
     if (isDealer && (wallet === "678" || metaMaskAddress)) {
       setCurrentUser({
         name: "Siddhant",
@@ -111,17 +112,32 @@ function App() {
   const availableVehicles = vehicles.filter(vehicle => !transferredTokens.includes(vehicle.tokenId));
 
   return (
-    <div className="min-h-screen bg-primary text-white">
+    <div className="min-h-screen bg-cyber-dark text-white relative overflow-hidden">
+      {/* Minimalistic Background */}
+      <div className="cyber-bg">
+        <div className="cyber-grid"></div>
+        <div className="floating-particles"></div>
+      </div>
+
       {/* Header/Navbar */}
-      <nav className="bg-primary-light border-b border-metallic/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center cursor-pointer" onClick={() => setCurrentPage('home')}>
-              <Car className="w-8 h-8 text-gold" />
-              <span className="ml-2 text-xl font-bold">DeVahan</span>
-            </div>
+      <nav className="cyber-nav backdrop-blur-xl border-b border-cyber-accent/20 relative z-50">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-1">
+          <div className="flex items-center justify-between h-16 relative-0">
+            { /*<div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
+              <div className="cyber-logo-container">
+                <Car className="w-8 h-8 text-cyber-accent group-hover:text-cyber-neon-yellow transition-colors duration-200" />
+              </div>
+              <span className="ml-3 text-2xl font-bold cyber-text-glow tracking-wider">DeVahan</span>
+            </div> */ }
+            <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}></div>
+            <img 
+  src={logo} 
+  alt="DeVahan Logo" 
+  className="w-36 h-auto cursor-pointer"
+  onClick={() => setCurrentPage('home')}
+/>
             <div className="hidden md:block">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-6">
                 {isAuthenticated && currentUser?.type === 'user' && (
                   <div onClick={() => setCurrentPage('vehicles')} className="cursor-pointer">
                     <NavLink icon={<Car />} text={t('nav.myVehicles')} />
@@ -138,22 +154,29 @@ function App() {
                   </div>
                 )}
                 <NavLink icon={<History />} text={t('nav.history')} />
+                
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-4">
-                    <span className="text-metallic">
-                      {currentUser?.name} ({currentUser?.type})
-                    </span>
+                    <div className="cyber-user-info">
+                      <span className="text-cyber-accent font-medium">
+                        {currentUser?.name}
+                      </span>
+                      <span className="text-cyber-muted ml-2">
+                        ({currentUser?.type})
+                      </span>
+                    </div>
                     <button 
                       onClick={handleSignOut}
-                      className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-warning to-warning-orange text-white font-semibold hover:opacity-90 transition-opacity"
+                      className="cyber-btn-danger"
                     >
+                      <Zap className="w-4 h-4 mr-2" />
                       {t('nav.signOut')}
                     </button>
                   </div>
                 ) : (
                   <button 
                     onClick={() => setShowAuthModal(true)}
-                    className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-gold to-gold-light text-primary font-semibold hover:opacity-90 transition-opacity"
+                    className="cyber-btn-primary"
                   >
                     <Wallet2 className="w-4 h-4 mr-2" />
                     {t('nav.signIn')}
@@ -165,136 +188,141 @@ function App() {
         </div>
       </nav>
 
-      {/* Auth Modal */}
+      {/* Auth Modal - No Animation */}
       {showAuthModal && (
-        <div className="absolute top-[60vh] inset-0  flex items-center justify-center z-50">
-          <div className="bg-primary-light rounded-lg p-6 w-full max-w-md absolute">
+        <div className="cyber-modal-backdrop">
+          <div className="cyber-modal">
             <button 
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 text-metallic hover:text-white"
+              className="cyber-close-btn"
             >
               <X className="w-5 h-5" />
             </button>
             
-            <div className="flex justify-center space-x-4 mb-6">
+            <div className="cyber-modal-header">
+              <h2 className="text-2xl font-bold cyber-text-glow mb-6">Authentication Portal</h2>
+            </div>
+            
+            <div className="flex justify-center space-x-4 mb-8">
               <button 
                 onClick={() => setIsDealer(false)}
-                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${!isDealer ? 'bg-gold text-primary' : 'text-metallic hover:text-white'}`}
+                className={`cyber-tab-btn ${!isDealer ? 'active' : ''}`}
               >
                 <User className="w-4 h-4 mr-2" />
                 {t('auth.user')}
               </button>
               <button 
                 onClick={() => setIsDealer(true)}
-                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isDealer ? 'bg-gold text-primary' : 'text-metallic hover:text-white'}`}
+                className={`cyber-tab-btn ${isDealer ? 'active' : ''}`}
               >
                 <Building2 className="w-4 h-4 mr-2" />
                 {t('auth.dealer')}
               </button>
             </div>
 
-            <div className="flex justify-center space-x-4 mb-6">
+            <div className="flex justify-center space-x-4 mb-8">
               <button 
                 onClick={() => setIsSignIn(true)}
-                className={`px-4 py-2 rounded-lg transition-colors ${isSignIn ? 'bg-neon-blue text-primary' : 'text-metallic hover:text-white'}`}
+                className={`cyber-auth-toggle ${isSignIn ? 'active' : ''}`}
               >
                 {t('auth.signIn')}
               </button>
               <button 
                 onClick={() => setIsSignIn(false)}
-                className={`px-4 py-2 rounded-lg transition-colors ${!isSignIn ? 'bg-neon-blue text-primary' : 'text-metallic hover:text-white'}`}
+                className={`cyber-auth-toggle ${!isSignIn ? 'active' : ''}`}
               >
                 {t('auth.signUp')}
               </button>
             </div>
 
             {/* MetaMask Connect */}
-            <div className="mb-4">
+            <div className="mb-6">
               <MetaMaskConnect onConnect={handleMetaMaskConnect} />
             </div>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-metallic/20"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-primary-light text-metallic">
-                  {metaMaskAddress ? t('auth.walletConnected') : 'or continue with credentials'}
-                </span>
-              </div>
+            <div className="cyber-divider">
+              <span className="cyber-divider-text">
+                {metaMaskAddress ? t('auth.walletConnected') : 'or continue with credentials'}
+              </span>
             </div>
 
-            <form onSubmit={handleSignIn} className=" space-y-4">
+            <form onSubmit={handleSignIn} className="space-y-6">
               {!isSignIn && (
                 <>
-                  <div>
-                    <label className="block text-sm font-medium text-metallic mb-1">{t('auth.name')}</label>
+                  <div className="cyber-input-group">
+                    <label className="cyber-label">{t('auth.name')}</label>
                     <input 
                       type="text"   
                       name="name"
-                      className="w-full px-3 py-2 bg-primary border border-metallic/20 rounded-lg focus:outline-none focus:border-gold text-white"
+                      className="cyber-input"
                       placeholder={`${t('auth.name')}...`}
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-metallic mb-1">{t('auth.phone')}</label>
+                  <div className="cyber-input-group">
+                    <label className="cyber-label">{t('auth.phone')}</label>
                     <input 
                       type="tel" 
                       name="phone"
-                      className="w-full px-3 py-2 bg-primary border border-metallic/20 rounded-lg focus:outline-none focus:border-gold text-white"
+                      className="cyber-input"
                       placeholder={`${t('auth.phone')}...`}
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-metallic mb-1">{t('auth.address')}</label>
+                  <div className="cyber-input-group">
+                    <label className="cyber-label">{t('auth.address')}</label>
                     <textarea 
                       name="address"
-                      className="w-full px-3 py-2 bg-primary border border-metallic/20 rounded-lg focus:outline-none focus:border-gold text-white"
+                      className="cyber-input min-h-[80px]"
                       placeholder={`${t('auth.address')}...`}
                       rows={3}
                     />
                   </div>
                 </>
               )}
-              <div>
-                <label className="block text-sm font-medium text-metallic mb-1">{t('auth.email')}</label>
+              
+              <div className="cyber-input-group">
+                <label className="cyber-label">{t('auth.email')}</label>
                 <input 
                   type="email" 
                   name="email"
-                  className="w-full px-3 py-2 bg-primary border border-metallic/20 rounded-lg focus:outline-none focus:border-gold text-white"
+                  className="cyber-input"
                   placeholder={`${t('auth.email')}...`}
                 />
               </div>
+              
               {!metaMaskAddress && (
-                <div>
-                  <label className="block text-sm font-medium text-metallic mb-1">{t('auth.walletPin')}</label>
+                <div className="cyber-input-group">
+                  <label className="cyber-label">{t('auth.walletPin')}</label>
                   <input 
                     type="text" 
                     name="wallet"
-                    className="w-full px-3 py-2 bg-primary border border-metallic/20 rounded-lg focus:outline-none focus:border-gold text-white"
+                    className="cyber-input"
                     placeholder={`${t('auth.walletPin')}...`}
                   />
                 </div>
               )}
+              
               {!isSignIn && isDealer && (
-                <div>
-                  <label className="block text-sm font-medium text-metallic mb-1">{t('auth.dealerId')}</label>
+                <div className="cyber-input-group">
+                  <label className="cyber-label">{t('auth.dealerId')}</label>
                   <input 
                     type="text" 
                     name="dealerId"
-                    className="w-full px-3 py-2 bg-primary border border-metallic/20 rounded-lg focus:outline-none focus:border-gold text-white"
+                    className="cyber-input"
                     placeholder={`${t('auth.dealerId')}...`}
                   />
                 </div>
               )}
+              
               <button 
                 type="submit"
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-neon-blue to-neon-green text-primary font-bold hover:opacity-90 transition-opacity"
+                className="cyber-btn-submit w-full"
               >
+                <Shield className="w-4 h-4 mr-2" />
                 {isSignIn ? t('auth.signIn') : (isDealer ? t('auth.registerAsDealer') : t('auth.signUp'))}
               </button>
+              
               {isSignIn && !metaMaskAddress && (
-                <p className="text-sm text-metallic text-center mt-2">
+                <p className="text-sm text-cyber-muted text-center mt-4">
                   {isDealer ? t('auth.demoDealer') : t('auth.demoUser')}
                 </p>
               )}
@@ -319,99 +347,77 @@ function App() {
 
       {currentPage === 'home' ? (
         <>
-          {/* Hero Section */}
-          <div className="relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-              <div className="text-center">
-                <h1 className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
-                  <span className="block">{t('home.title1')}</span>
-                  <span className="block text-gold">{t('home.title2')}</span>
-                </h1>
-                <p className="mt-3 max-w-md mx-auto text-base text-metallic sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                  {t('home.subtitle')}
-                </p>
-                <div className="mt-10 flex justify-center gap-4">
-                  <button 
-                    onClick={() => setShowAuthModal(true)}
-                    className="px-8 py-3 rounded-lg bg-gradient-to-r from-neon-blue to-neon-green text-primary font-bold hover:opacity-90 transition-opacity" 
-                    style={{ background: 'linear-gradient(to right, #00c6ff, #0072ff)' }}
-                  >
-                    {t('home.getStarted')}
-                  </button>
-                  <button className="px-8 py-3 rounded-lg border-2 border-metallic/50 hover:border-metallic transition-colors">
-                    {t('home.learnMore')}
-                  </button>
-                </div>
+          {/* Hero Section - No Animations */}
+          <div className="relative py-32 px-4">
+            <div className="max-w-7xl mx-auto text-center">
+              <h1 className="cyber-hero-title">
+                <span className="block">{t('home.title1')}</span>
+                <span className="block text-cyber-accent cyber-text-glow">
+                  {t('home.title2')}
+                </span>
+              </h1>
+              <p className="mt-8 max-w-3xl mx-auto text-xl text-cyber-muted cyber-text-shadow">
+                {t('home.subtitle')}
+              </p>
+              <div className="mt-12 flex flex-col sm:flex-row justify-center gap-6">
+                <button 
+                  onClick={() => setShowAuthModal(true)}
+                  className="cyber-btn-hero"
+                >
+                  <Zap className="w-5 h-5 mr-2" />
+                  {t('home.getStarted')}
+                </button>
+                <button className="cyber-btn-secondary">
+                  <Globe className="w-5 h-5 mr-2" />
+                  {t('home.learnMore')}
+                </button>
               </div>
             </div>
-            
-            {/* Background Effect */}
-            <div className="absolute inset-0 -z-10 bg-gradient-radial from-primary-light to-primary" />
-            <div className="absolute inset-0 -z-10 opacity-30 bg-[radial-gradient(#FFD700_1px,transparent_1px)] [background-size:16px_16px]" />
           </div>
 
-          {/* Features Grid */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          {/* Features Grid - No Animations */}
+          <div className="max-w-7xl mx-auto px-4 py-24">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <FeatureCard
                 title={t('feature.secureOwnership.title')}
                 description={t('feature.secureOwnership.desc')}
-                icon={<Wallet2 className="w-8 h-8 text-gold" />}
+                icon={<Wallet2 className="w-8 h-8 text-cyber-neon-yellow" />}
               />
               <FeatureCard
                 title={t('feature.instantTransfers.title')}
                 description={t('feature.instantTransfers.desc')}
-                icon={<Transfer className="w-8 h-8 text-gold" />}
+                icon={<Transfer className="w-8 h-8 text-cyber-accent" />}
               />
               <FeatureCard
                 title={t('feature.completeHistory.title')}
                 description={t('feature.completeHistory.desc')}
-                icon={<History className="w-8 h-8 text-gold" />}
+                icon={<History className="w-8 h-8 text-cyber-green" />}
               />
             </div>
           </div>
         </>
       ) : (
-        // Vehicles Page
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 className="text-3xl font-bold mb-8">{t('vehicles.title')}</h2>
+        // Vehicles Page - No Animations
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <h2 className="text-4xl font-bold mb-12 cyber-text-glow text-center">
+            {t('vehicles.title')}
+          </h2>
           {availableVehicles.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-metallic text-lg">{t('vehicles.noVehicles')}</p>
+            <div className="cyber-empty-state">
+              <Car className="w-16 h-16 text-cyber-accent mb-4 mx-auto" />
+              <p className="text-cyber-muted text-xl">{t('vehicles.noVehicles')}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {availableVehicles.map((vehicle, index) => (
-                <div key={index} className="bg-primary-light rounded-lg overflow-hidden border border-metallic/20 hover:border-metallic/40 transition-all transform hover:scale-[1.02]">
-                  <div className="aspect-video w-full overflow-hidden">
-                    <img 
-                      src={vehicle.image} 
-                      alt={vehicle.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center mb-4">
-                      <Car className="w-6 h-6 text-gold mr-3" />
-                      <h3 className="text-xl font-semibold">{vehicle.name}</h3>
-                    </div>
-                    <div className="space-y-2 text-metallic">
-                      <p>{t('vehicles.plateNumber')} <span className="text-white">{vehicle.plate}</span></p>
-                      <p>{t('vehicles.wallet')} <span className="text-white">{vehicle.wallet}</span></p>
-                      <p>{t('vehicles.tokenId')} <span className="text-white">{vehicle.tokenId}</span></p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setSelectedVehicle(vehicle.tokenId);
-                        setShowTransferModal(true);
-                      }}
-                      className="mt-4 w-full py-2 rounded-lg bg-gradient-to-r from-neon-blue to-neon-green text-primary font-semibold hover:opacity-90 transition-opacity flex items-center justify-center"
-                    >
-                      <span>{t('vehicles.transfer')}</span>
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </button>
-                  </div>
-                </div>
+                <VehicleCard 
+                  key={index} 
+                  vehicle={vehicle} 
+                  onTransfer={(tokenId) => {
+                    setSelectedVehicle(tokenId);
+                    setShowTransferModal(true);
+                  }}
+                />
               ))}
             </div>
           )}
@@ -429,21 +435,76 @@ function App() {
 
 function NavLink({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <a href="#" className="flex items-center px-3 py-2 rounded-md text-metallic hover:text-white hover:bg-primary-light transition-colors">
-      {React.cloneElement(icon as React.ReactElement, { className: 'w-4 h-4 mr-2' })}
-      {text}
-    </a>
+    <div className="cyber-nav-link group">
+      {React.cloneElement(icon as React.ReactElement, { 
+        className: 'w-4 h-4 mr-2 group-hover:text-cyber-neon-yellow transition-colors duration-200' 
+      })}
+      <span className="cyber-nav-text">{text}</span>
+    </div>
   );
 }
 
-function FeatureCard({ title, description, icon }: { title: string; description: string; icon: React.ReactNode }) {
+function FeatureCard({ title, description, icon }: { 
+  title: string; 
+  description: string; 
+  icon: React.ReactNode;
+}) {
   return (
-    <div className="p-6 rounded-lg bg-primary-light border border-metallic/20 hover:border-metallic/40 transition-colors">
-      <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center mb-4">
+    <div className="cyber-feature-card">
+      <div className="cyber-icon-container">
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-metallic">{description}</p>
+      <h3 className="text-xl font-bold mb-4 cyber-text-glow">{title}</h3>
+      <p className="text-cyber-muted leading-relaxed">{description}</p>
+    </div>
+  );
+}
+
+function VehicleCard({ vehicle, onTransfer }: { 
+  vehicle: any; 
+  onTransfer: (tokenId: string) => void;
+}) {
+  const { t } = useLanguage();
+  
+  return (
+    <div className="cyber-vehicle-card">
+      <div className="cyber-vehicle-image">
+        <img 
+          src={vehicle.image} 
+          alt={vehicle.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
+      <div className="cyber-vehicle-info">
+        <div className="flex items-center mb-4">
+          <Car className="w-6 h-6 text-cyber-accent mr-3" />
+          <h3 className="text-xl font-semibold cyber-text-glow">{vehicle.name}</h3>
+        </div>
+        
+        <div className="space-y-3">
+          <div className="cyber-vehicle-detail">
+            <span className="text-cyber-muted">{t('vehicles.plateNumber')}</span>
+            <span className="text-white font-mono">{vehicle.plate}</span>
+          </div>
+          <div className="cyber-vehicle-detail">
+            <span className="text-cyber-muted">{t('vehicles.wallet')}</span>
+            <span className="text-white font-mono text-sm">{vehicle.wallet}</span>
+          </div>
+          <div className="cyber-vehicle-detail">
+            <span className="text-cyber-muted">{t('vehicles.tokenId')}</span>
+            <span className="text-cyber-accent font-mono">{vehicle.tokenId}</span>
+          </div>
+        </div>
+        
+        <button
+          onClick={() => onTransfer(vehicle.tokenId)}
+          className="cyber-btn-transfer w-full mt-6 group"
+        >
+          <span>{t('vehicles.transfer')}</span>
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </button>
+      </div>
     </div>
   );
 }
