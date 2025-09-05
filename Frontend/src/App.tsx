@@ -154,8 +154,8 @@ function App() {
                     <NavLink icon={<Settings />} text="Service Records" />
                   </div>
                 )}
-                <NavLink icon={<History />} text={t('nav.history')} />
-                
+                {/* <NavLink icon={<History />} text={t('nav.history')} /> */}
+
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-4">
                     <div className="cyber-user-info">
@@ -390,7 +390,7 @@ function App() {
                 description={t('feature.instantTransfers.desc')}
                 icon={<Transfer className="w-8 h-8 text-cyber-accent" />}
               />
-              <FeatureCard
+             <FeatureCard
                 title={t('feature.completeHistory.title')}
                 description={t('feature.completeHistory.desc')}
                 icon={<History className="w-8 h-8 text-cyber-green" />}
