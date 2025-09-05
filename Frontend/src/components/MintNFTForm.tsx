@@ -116,14 +116,8 @@ const MintNFTForm: React.FC<MintNFTFormProps> = ({ isOpen, onClose }) => {
 
     try {
       // Placeholder - should be a File object or a valid URL
-      const imageURI = "https://via.placeholder.com/150";
     
-      console.log("Minting with data:", { ...formData, imageURI });
-    
-      if (!imageURI) {
-        console.log("media is not inserted");
-        return;
-      }
+      console.log("Minting with data:", { ...formData});
     
       // const formData1 = new FormData();
       // formData1.append("file", imageURI);
@@ -148,6 +142,7 @@ const MintNFTForm: React.FC<MintNFTFormProps> = ({ isOpen, onClose }) => {
       
       const formData1 = new FormData();
       formData1.append("file", imageFile); // ✅ real file object
+      console.log(imageFile);
       formData1.append("upload_preset", "NFT_Marketplace");
       
       const res = await fetch("https://api.cloudinary.com/v1_1/dbvezos5j/image/upload", {
@@ -160,7 +155,7 @@ const MintNFTForm: React.FC<MintNFTFormProps> = ({ isOpen, onClose }) => {
       
       const MediaURL = data.secure_url; // ✅ correct URL
       
-    
+      console.log(MediaURL)
       // Call the minting function
       const tx = await mintVehicle(
         formData._owner,

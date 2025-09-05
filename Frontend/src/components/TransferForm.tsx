@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { X, Check, ArrowRight } from 'lucide-react';
 import { LoadingState } from './LoadingState';
+import { NFTContext } from "../contracts/DeVahanContext";
 
 interface TransferFormProps {
   isOpen: boolean;
@@ -15,6 +16,13 @@ const TransferForm: React.FC<TransferFormProps> = ({ isOpen, onClose, onTransfer
     receiverWallet: '',
     tokenId: ''
   });
+  const nftContext = useContext(NFTContext);
+  if (!nftContext) {
+    // A better UI would be to show this inside the modal
+    return <div className="text-white">Error: NFT Context not available.</div>;
+  }
+  
+  const { mintVehicle } = nftContext;
 
   useEffect(() => {
     if (selectedVehicle) {
@@ -27,19 +35,38 @@ const TransferForm: React.FC<TransferFormProps> = ({ isOpen, onClose, onTransfer
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     setFormState('loading');
+     try {
+      
+
+      const MediaURL = "https://res.cloudinary.com/dbvezos5j/image/upload/v1757092872/zvmikog4ppyuugzanqvu.jpg"; // ✅ correct URL
+      // Call the minting function
+      const tx = await mintVehicle(
+        "0xe90C0203ccd314326D34A659C09b2ad7bd008452",
+        "rr",
+        "rr",
+        "rr",
+        2005,
+        3333,
+        333,
+        MediaURL
+      );
     
-    setTimeout(() => {
-      setFormState('success');
-      onTransferComplete(formData.tokenId);
+
+      setFormState("success");
+    
       setTimeout(() => {
-        setFormState('idle');
-        setFormData({ receiverWallet: '', tokenId: '' });
+        setFormState("idle");
         onClose();
-      }, 2000);
-    }, 2000);
+      }, 3000);
+    
+    } catch (error) {
+      console.error("Minting failed:", error);
+      alert("Minting failed. Check the console for details.");
+      setFormState("idle");
+    }
   };
 
   if (!isOpen) return null;
