@@ -129,15 +129,16 @@ function App() {
               </div>
               <span className="ml-3 text-2xl font-bold cyber-text-glow tracking-wider">DeVahan</span>
             </div> */ }
-            <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}></div>
+            <div className="flex items-center cursor-pointer group ml-8 " onClick={() => setCurrentPage('home')}>
             <img 
   src={logo} 
   alt="DeVahan Logo" 
   className="w-36 h-auto cursor-pointer"
   onClick={() => setCurrentPage('home')}
 />
+</div>
             <div className="hidden md:block">
-              <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-6 mr-10">
                 {isAuthenticated && currentUser?.type === 'user' && (
                   <div onClick={() => setCurrentPage('vehicles')} className="cursor-pointer">
                     <NavLink icon={<Car />} text={t('nav.myVehicles')} />
