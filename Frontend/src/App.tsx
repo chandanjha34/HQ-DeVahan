@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight, Zap, Shield, Globe, Settings } from 'lucide-react';
+import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight, Zap, Shield, Globe } from 'lucide-react';
+import { Settings } from 'lucide-react';
+import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import ResaleEstimator from './components/ResaleEstimator';
+import { IndianRupee } from 'lucide-react';
 import MintNFTForm from './components/MintNFTForm';
 import TransferForm from './components/TransferForm';
 import ServiceRecords from './components/ServiceRecords';
@@ -9,10 +13,14 @@ import MetaMaskConnect from './components/MetaMaskConnect';
 import { useLanguage } from './context/LanguageContext';
 import logo from './assets/logo.png';
 
+
+
+
 function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
+   const [showResaleEstimator, setShowResaleEstimator] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
   const [transferredTokens, setTransferredTokens] = useState<string[]>([]);
   const [isDealer, setIsDealer] = useState(false);
@@ -26,6 +34,43 @@ function App() {
     wallet: string;
     type: 'user' | 'dealer';
   } | null>(null);
+
+  const faqs = [
+    {
+      question: "Is my vehicle data secured on the NFT blockchain?",
+      answer: "Yes, ownership and details are cryptographically secured and only updatable by verified dealers or owners.",
+      color: "#fff700" // neon yellow
+    },
+    {
+      question: "Can I transfer my vehicle NFT?",
+      answer: "Absolutely! You can transfer the NFT to a new owner, and the vehicle registry updates instantly on blockchain.",
+      color: "#00ffe7" // neon blue
+    },
+    {
+      question: "What happens to my previous vehicle records?",
+      answer: "All previous ownership and history are securely stored and viewable in the NFT’s complete audit trail.",
+      color: "#fff700"
+    },
+    {
+      question: "How do I prove NFT vehicle ownership?",
+      answer: "Your blockchain wallet address acts as proof. Ownership can be validated in-app and on chain explorers.",
+      color: "#00ffe7"
+    },
+    {
+      question: "How do I update insurance or service history?",
+      answer: "Authorized service centers and insurance providers can add entries via our NFT registry portal.",
+      color: "#fff700"
+    },
+    {
+      question: "Where can I find and download my vehicle certificate?",
+      answer: "You can access and download your certified NFT vehicle documents directly from your dashboard.",
+      color: "#00ffe7"
+    }
+  ];
+  
+  const [open, setOpen] = useState(Array(faqs.length).fill(false));
+  const handleToggle = (idx: number) =>
+    setOpen(open => open.map((o, i) => (i === idx ? !o : o)));
   
   const { t } = useLanguage();
 
@@ -154,8 +199,17 @@ function App() {
                     <NavLink icon={<Settings />} text="Service Records" />
                   </div>
                 )}
-                {/* <NavLink icon={<History />} text={t('nav.history')} /> */}
-
+                <NavLink icon={<History />} text={t('nav.history')} />
+                 {/* Resale Estimator - Only for Users */}
+                {isAuthenticated && currentUser?.type === 'user' && (
+                  <div onClick={() => setShowResaleEstimator(true)} className="cursor-pointer">
+                    <NavLink 
+                      icon={<IndianRupee className="animate-pulse" />} 
+                      text="Resale Estimator" 
+                    />
+                  </div>
+                )}
+                
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-4">
                     <div className="cyber-user-info">
@@ -346,6 +400,14 @@ function App() {
         selectedVehicle={selectedVehicle}
       />
 
+            {/* Resale Estimator Modal */}
+      <ResaleEstimator
+        isOpen={showResaleEstimator}
+        onClose={() => setShowResaleEstimator(false)}
+        userType={currentUser?.type || 'user'}
+      />
+
+
       {/* Main Content */}
       {currentPage === 'home' ? (
         <>
@@ -369,10 +431,19 @@ function App() {
                   <Zap className="w-5 h-5 mr-2" />
                   {t('home.getStarted')}
                 </button>
-                <button className="cyber-btn-secondary">
-                  <Globe className="w-5 h-5 mr-2" />
-                  {t('home.learnMore')}
-                </button>
+                <button
+  className="cyber-btn-secondary"
+  onClick={() => {
+    const faqDiv = document.getElementById("faq");
+    if (faqDiv) {
+      faqDiv.scrollIntoView({ behavior: "smooth" });
+    }
+  }}
+>
+  <Globe className="w-5 h-5 mr-2" />
+  {t("home.learnMore")}
+</button>
+
               </div>
             </div>
           </div>
@@ -390,12 +461,63 @@ function App() {
                 description={t('feature.instantTransfers.desc')}
                 icon={<Transfer className="w-8 h-8 text-cyber-accent" />}
               />
-             <FeatureCard
+              <FeatureCard
                 title={t('feature.completeHistory.title')}
                 description={t('feature.completeHistory.desc')}
                 icon={<History className="w-8 h-8 text-cyber-green" />}
               />
             </div>
+
+            {
+  // FAQ data
+
+ 
+  <div id="faq" className=" faq max-w-4xl mx-auto mt-32 mb-8 px-4 py-10 rounded-xl bg-white/5 border border-white/15 shadow-lg backdrop-blur-lg ">
+  <h2
+    className="text-4xl font-bold mb-8 flex items-center gap-2"
+    style={{ color: "#00ffe7" }}
+  >
+    <HelpCircle className="w-24 h-24" style={{ color: "#00ffe7" }} />
+    Frequently Asked Questions
+  </h2>
+
+  <div className="space-y-8">
+    {faqs.map((faq, idx) => (
+      <div
+        key={faq.question}
+        className={`rounded-lg border transition-all ${
+          open[idx]
+            ? "border-white/30 bg-white/7"
+            : "border-white/15 bg-transparent"
+        }`}
+      >
+        {/* Question */}
+        <button
+          className="w-full flex items-center justify-between p-6 text-left focus:outline-none text-2xl font-semibold"
+          style={{ color: faq.color }}
+          onClick={() => handleToggle(idx)}
+        >
+          <span>{faq.question}</span>
+          {open[idx] ? (
+            <ChevronUp className="w-10 h-10" style={{ color: "#fff700" }} />
+          ) : (
+            <ChevronDown className="w-10 h-10" style={{ color: "#00ffe7" }} />
+          )}
+        </button>
+
+        {/* Answer */}
+        {open[idx] && (
+          <div className="px-8 pb-8 text-white/80 text-lg font-normal leading-relaxed mt-5">
+            {faq.answer}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+
+  
+}
           </div>
         </>
       ) : currentPage === 'service-records' ? (
