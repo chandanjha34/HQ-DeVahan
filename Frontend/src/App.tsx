@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight, Zap, Shield, Globe } from 'lucide-react';
-
-import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Settings } from 'lucide-react';
+import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import ResaleEstimator from './components/ResaleEstimator';
+import { IndianRupee } from 'lucide-react';
 import MintNFTForm from './components/MintNFTForm';
 import TransferForm from './components/TransferForm';
 import ServiceRecords from './components/ServiceRecords';
@@ -19,6 +20,7 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
+   const [showResaleEstimator, setShowResaleEstimator] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
   const [transferredTokens, setTransferredTokens] = useState<string[]>([]);
   const [isDealer, setIsDealer] = useState(false);
@@ -198,6 +200,15 @@ function App() {
                   </div>
                 )}
                 <NavLink icon={<History />} text={t('nav.history')} />
+                 {/* Resale Estimator - Only for Users */}
+                {isAuthenticated && currentUser?.type === 'user' && (
+                  <div onClick={() => setShowResaleEstimator(true)} className="cursor-pointer">
+                    <NavLink 
+                      icon={<IndianRupee className="animate-pulse" />} 
+                      text="Resale Estimator" 
+                    />
+                  </div>
+                )}
                 
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-4">
@@ -388,6 +399,14 @@ function App() {
         onTransferComplete={handleTransferComplete}
         selectedVehicle={selectedVehicle}
       />
+
+            {/* Resale Estimator Modal */}
+      <ResaleEstimator
+        isOpen={showResaleEstimator}
+        onClose={() => setShowResaleEstimator(false)}
+        userType={currentUser?.type || 'user'}
+      />
+
 
       {/* Main Content */}
       {currentPage === 'home' ? (
