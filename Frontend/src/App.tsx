@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Wallet2, Car, History, Plus, Train as Transfer, X, User, Building2, ArrowRight, Zap, Shield, Globe } from 'lucide-react';
 
 import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
-
+import { Settings } from 'lucide-react';
 import MintNFTForm from './components/MintNFTForm';
 import TransferForm from './components/TransferForm';
 import ServiceRecords from './components/ServiceRecords';
